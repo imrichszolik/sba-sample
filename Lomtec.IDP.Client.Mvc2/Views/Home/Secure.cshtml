@@ -1,0 +1,12 @@
+﻿@using Microsoft.AspNetCore.Authentication
+
+<h2>Properties &nbsp; <a class="btn btn-warning" asp-action="renewtokens">Renew Tokens</a></h2>
+
+<dl>
+    @foreach (var prop in (await Context.AuthenticateAsync()).Properties.Items) {
+        <dt>@prop.Key</dt>
+        <dd>@prop.Value</dd>
+    }
+</dl>
+
+<partial name="_Claims" />

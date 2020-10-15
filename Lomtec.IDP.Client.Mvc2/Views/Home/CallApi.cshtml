@@ -1,0 +1,12 @@
+﻿@inject Microsoft.Extensions.Options.IOptions<Lomtec.IDP.Client.Mvc2.ClientConfiguration> options;
+@{ 
+    var wellKnow = options.Value.Authority + ".well-known/openid-configuration";
+}
+
+<h1>API Response</h1>
+
+<pre>@ViewBag.Json</pre>
+
+<h2>Endpoints</h2>
+
+<a class="btn btn-success btn-lg" href="@wellKnow">Well-known</a>
