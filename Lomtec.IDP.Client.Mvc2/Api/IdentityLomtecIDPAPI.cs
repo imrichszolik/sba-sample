@@ -50,10 +50,6 @@ namespace Lomtec.Proxy.Client
         /// </summary>
         public virtual IUser User { get; private set; }
 
-        public IdentityLomtecIDPAPI(HttpClient httpClient) : base(httpClient, true) {
-            Initialize();
-        }
-
         /// <summary>
         /// Initializes a new instance of the IdentityLomtecIDPAPI class.
         /// </summary>
@@ -297,7 +293,7 @@ namespace Lomtec.Proxy.Client
         {
             Role = new Role(this);
             User = new User(this);
-            BaseUri = new System.Uri("https://identityapi.sba.develop.lomtec.com");
+            BaseUri = new System.Uri("https://localhost:44310");
             SerializationSettings = new JsonSerializerSettings
             {
                 Formatting = Newtonsoft.Json.Formatting.Indented,

@@ -90,6 +90,7 @@ namespace MvcHybrid.Controllers {
         public async Task<IActionResult> SetProperty() {
             var token = await HttpContext.GetTokenAsync("access_token");
             var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(options.IdentityApi);
             client.SetBearerToken(token);
 
             var api = new IdentityLomtecIDPAPI(client);
