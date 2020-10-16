@@ -1,5 +1,6 @@
 ﻿using IdentityModel.Client;
 using Lomtec.IDP.Client.Mvc2;
+using Lomtec.Proxy.Client;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -9,6 +10,7 @@ using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Globalization;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -81,6 +83,28 @@ namespace MvcHybrid.Controllers {
             var response = await client.GetStringAsync(options.IdentityApi + "api/v1/role");
             ViewBag.Json = JObject.Parse(response).ToString();
 
+            return View("CallApi");
+        }
+
+        [Authorize]
+        public async Task<IActionResult> SetProperty() {
+            var token = await HttpContext.GetTokenAsync("access_token");
+            var client = _httpClientFactory.CreateClient();
+            client.SetBearerToken(token);
+
+            var api = new IdentityLomtecIDPAPI(client);
+            var user = api.User.GetUsers(filter: "contains(email, 'imrich')")?.Value?.FirstOrDefault();
+            if (user != null) {
+
+                var now = DateTime.Now;
+                api.User.SetProperty(user.UserId, new Lomtec.Proxy.Client.Models.UserPropertyDto() { PropertyName = "Date", PropertyValue = now.ToString("d") });
+                api.User.SetProperty(user.UserId, new Lomtec.Proxy.Client.Models.UserPropertyDto() { PropertyName = "Time", PropertyValue = now.ToString("t") });
+                var properties = api.User.GetProperties(user.UserId);
+                ViewBag.Json = JObject.FromObject(properties).ToString();
+            }
+            else {
+                ViewBag.Json = "User is not found!";
+            }
             return View("CallApi");
         }
 
