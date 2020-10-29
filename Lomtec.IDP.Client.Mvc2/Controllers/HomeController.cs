@@ -89,30 +89,6 @@ namespace MvcHybrid.Controllers {
             return View("CallApi");
         }
 
-        //[Authorize]
-        //public async Task<IActionResult> SetProperty() {
-        //    var token = await HttpContext.GetTokenAsync("access_token");
-        //    var client = _httpClientFactory.CreateClient();
-        //    client.BaseAddress = new Uri(options.IdentityApi);
-        //    client.SetBearerToken(token);
-
-        //    var api = new IdentityLomtecIDPAPI(client);
-        //    var user = api.User.GetUsers(filter: "contains(email, 'imrich')")?.Value?.FirstOrDefault();
-        //    if (user != null) {
-
-        //        var now = DateTime.Now;
-        //        api.User.SetProperty(user.UserId, new Lomtec.Proxy.Client.Models.UserPropertyDto() { PropertyName = "Date", PropertyValue = now.ToString("d") });
-        //        api.User.SetProperty(user.UserId, new Lomtec.Proxy.Client.Models.UserPropertyDto() { PropertyName = "Time", PropertyValue = now.ToString("t") });
-        //        var properties = api.User.GetProperties(user.UserId);
-        //        ViewBag.Json = JObject.FromObject(properties).ToString();
-        //    }
-        //    else {
-        //        ViewBag.Json = "User is not found!";
-        //    }
-        //    return View("CallApi");
-        //}
-
-
         [Authorize]
         public async Task<IActionResult> CreateUser() {
             var token = await HttpContext.GetTokenAsync("access_token");
