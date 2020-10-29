@@ -1,7 +1,12 @@
 ﻿@using Microsoft.AspNetCore.Authentication
 
-<h2>Properties &nbsp; <a class="btn btn-warning" asp-action="renewtokens">Renew Tokens</a></h2>
+@inject Microsoft.Extensions.Options.IOptions<Lomtec.IDP.Client.Mvc2.ClientConfiguration> options;
+@{
+    var wellKnow = options.Value.Authority + ".well-known/openid-configuration";
+}
 
+<h2>
+    Properties &nbsp; <a class="btn btn-info" href="@wellKnow">Well-known</a> <a class="btn btn-warning" asp-action="renewtokens">Renew Tokens</a></h2>
 <dl>
     @foreach (var prop in (await Context.AuthenticateAsync()).Properties.Items) {
         <dt>@prop.Key</dt>

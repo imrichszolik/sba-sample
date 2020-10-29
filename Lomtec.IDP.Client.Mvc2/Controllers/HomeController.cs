@@ -1,6 +1,7 @@
 ﻿using IdentityModel.Client;
 using Lomtec.IDP.Client.Mvc2;
 using Lomtec.Proxy.Client;
+using Lomtec.Proxy.Client.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -12,6 +13,8 @@ using System;
 using System.Globalization;
 using System.Linq;
 using System.Net.Http;
+using System.Runtime.ExceptionServices;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace MvcHybrid.Controllers {
@@ -86,26 +89,93 @@ namespace MvcHybrid.Controllers {
             return View("CallApi");
         }
 
+        //[Authorize]
+        //public async Task<IActionResult> SetProperty() {
+        //    var token = await HttpContext.GetTokenAsync("access_token");
+        //    var client = _httpClientFactory.CreateClient();
+        //    client.BaseAddress = new Uri(options.IdentityApi);
+        //    client.SetBearerToken(token);
+
+        //    var api = new IdentityLomtecIDPAPI(client);
+        //    var user = api.User.GetUsers(filter: "contains(email, 'imrich')")?.Value?.FirstOrDefault();
+        //    if (user != null) {
+
+        //        var now = DateTime.Now;
+        //        api.User.SetProperty(user.UserId, new Lomtec.Proxy.Client.Models.UserPropertyDto() { PropertyName = "Date", PropertyValue = now.ToString("d") });
+        //        api.User.SetProperty(user.UserId, new Lomtec.Proxy.Client.Models.UserPropertyDto() { PropertyName = "Time", PropertyValue = now.ToString("t") });
+        //        var properties = api.User.GetProperties(user.UserId);
+        //        ViewBag.Json = JObject.FromObject(properties).ToString();
+        //    }
+        //    else {
+        //        ViewBag.Json = "User is not found!";
+        //    }
+        //    return View("CallApi");
+        //}
+
+
         [Authorize]
-        public async Task<IActionResult> SetProperty() {
+        public async Task<IActionResult> CreateUser() {
             var token = await HttpContext.GetTokenAsync("access_token");
             var client = _httpClientFactory.CreateClient();
             client.BaseAddress = new Uri(options.IdentityApi);
             client.SetBearerToken(token);
 
             var api = new IdentityLomtecIDPAPI(client);
-            var user = api.User.GetUsers(filter: "contains(email, 'imrich')")?.Value?.FirstOrDefault();
-            if (user != null) {
 
-                var now = DateTime.Now;
-                api.User.SetProperty(user.UserId, new Lomtec.Proxy.Client.Models.UserPropertyDto() { PropertyName = "Date", PropertyValue = now.ToString("d") });
-                api.User.SetProperty(user.UserId, new Lomtec.Proxy.Client.Models.UserPropertyDto() { PropertyName = "Time", PropertyValue = now.ToString("t") });
-                var properties = api.User.GetProperties(user.UserId);
-                ViewBag.Json = JObject.FromObject(properties).ToString();
+            //user to create
+            var userToCreate = new UserCreateDto() {
+                FirstName = "First",
+                LastName = "Last",
+                Email = "first.last@example.com"
+            };
+
+            //remove test user if exist...
+            var user = api.User.GetUsers(filter: $"email eq '{userToCreate.Email}'", top: 2)?.Value?.SingleOrDefault();
+            if (user != null) await api.User.DeleteUserAsync(user.UserId);
+
+            //status json 
+            var textResult = new StringBuilder();
+
+            //get first role
+            var clientRole = (await api.Role.GetRolesAsync("name eq 'client'", top: 2)).Value.SingleOrDefault();
+            if (clientRole != null) {
+
+                var result = await api.User.CreateUserAsync(userToCreate);
+                if (result is UserDto) {
+                    user = result as UserDto;
+                    textResult.AppendFormat("NewUser -> {0}", JObject.FromObject(user).ToString());
+                    textResult.AppendLine();
+                    textResult.AppendLine();
+
+                    //lockout user
+                    await api.User.LockoutAsync(user.UserId, true);
+                    //add role
+                    await api.User.AddUserRoleAsync(user.UserId, clientRole.RoleId);
+                    //add property
+                    await api.User.SetPropertyAsync(user.UserId, new UserPropertyDto() { PropertyName = "subject-id-number", PropertyValue = "01234567" });
+
+                    //get data
+                    var test = await api.User.GetUserAsync(user.UserId);
+                    textResult.AppendFormat("User -> {0}",JObject.FromObject(test).ToString());
+                    textResult.AppendLine();
+                    textResult.AppendLine();
+                    var testrole = await api.User.GetUserRolesAsync(user.UserId);
+                    textResult.AppendFormat("Roles -> {0}", JObject.FromObject(testrole).ToString());
+                    textResult.AppendLine();
+                    textResult.AppendLine();
+                    var testproperty = await api.User.GetPropertiesAsync(user.UserId);
+                    textResult.AppendFormat("Properties -> {0}", JObject.FromObject(testproperty).ToString());
+                    textResult.AppendLine();
+                }
+                else {
+                    textResult.AppendFormat("NewUser -> {0}", JObject.FromObject(result).ToString());
+                }
             }
             else {
-                ViewBag.Json = "User is not found!";
+                textResult.Append("Client role is missing!");
             }
+
+            ViewBag.Json = textResult.ToString();
             return View("CallApi");
         }
 

@@ -32,10 +32,10 @@
                 <ul class="nav navbar-nav">
                     <li><a asp-controller="Home" asp-action="Secure">Secure</a></li>
                     @if (User.Identity.IsAuthenticated) {
-                        <li><a asp-controller="Home" asp-action="GetUserInfo">UserInfo</a></li>
-                        <li><a asp-controller="Home" asp-action="GetUsers">Users</a></li>
-                        <li><a asp-controller="Home" asp-action="GetRoles">Roles</a></li>
-                        <li><a asp-controller="Home" asp-action="SetProperty">Property</a></li>
+                        <li><a asp-controller="Home" asp-action="GetUserInfo">GetUserInfo</a></li>
+                        <li><a asp-controller="Home" asp-action="GetUsers">GetUsers</a></li>
+                        <li><a asp-controller="Home" asp-action="GetRoles">GetRoles</a></li>
+                        <li><a asp-controller="Home" asp-action="CreateUser">CreateUser</a></li>
                         <li><a asp-controller="Home" asp-action="Logout">Logout</a></li>
                     }
                 </ul>
@@ -46,7 +46,7 @@
         @RenderBody()
         <hr />
         <footer>
-            <p>15.10.2020</p>
+            <p>29.10.2020</p>
         </footer>
     </div>
 
