@@ -1,9 +1,18 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <UserSecretsId>0efc7dd5-a3fd-45be-bb61-aac25e67a6a6</UserSecretsId>
+    <Version>1.0.0.0</Version>
+    <InformationalVersion>1.0.0.0</InformationalVersion>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Api\**" />
+    <Content Remove="Api\**" />
+    <EmbeddedResource Remove="Api\**" />
+    <None Remove="Api\**" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="IdentityModel" Version="4.4.0" />
@@ -13,6 +22,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Api\" />
+    <ProjectReference Include="..\Lomtec.IDP.Client.ApiPckg\Lomtec.IDP.Client.ApiPckg.csproj" />
   </ItemGroup>
 </Project>

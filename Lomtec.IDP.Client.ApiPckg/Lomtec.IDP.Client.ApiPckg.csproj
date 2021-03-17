@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <Authors>Lomtec.com</Authors>
+    <Company>Lomtec.com</Company>
+    <Product>Lomtec.IDP.Client.ApiPckg</Product>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+	<Version>1.0.0.0</Version>
+    <InformationalVersion>1.0.0.0</InformationalVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Rest.ClientRuntime" Version="2.3.22" />
+  </ItemGroup>
+
+</Project>

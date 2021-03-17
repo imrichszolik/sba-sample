@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+	<Version>1.0.0.0</Version>
+    <InformationalVersion>1.0.0.0</InformationalVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="IdentityModel" Version="4.4.0" />
+	  <PackageReference Include="Microsoft.Rest.ClientRuntime" Version="2.3.22" />
+	  <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.8.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Lomtec.IDP.Client.ApiPckg\Lomtec.IDP.Client.ApiPckg.csproj" />
+  </ItemGroup>
+
+</Project>
